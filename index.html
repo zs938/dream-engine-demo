@@ -1,205 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>智囊AIFin - 梦想引擎 & AI套餐猎手</title>
+    <title>智囊AIFin - 梦想引擎</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* 导航样式 */
-        .app-nav {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-            gap: 10px;
-        }
-        
-        .nav-btn {
-            padding: 12px 24px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .nav-btn.active {
-            background: #e74c3c;
-        }
-        
-        .nav-btn:hover {
-            background: #2980b9;
-        }
-        
-        /* 应用区域 */
-        .app-section {
-            display: none;
-        }
-        
-        .app-section.active {
-            display: block;
-        }
-        
-        /* 套餐猎手特定样式 */
-        .package-hunter-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .input-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        
-        .result-section {
-            display: none;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-        
-        .package-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 15px 0;
-        }
-    </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <div class="app-nav">
-        <button class="nav-btn active" onclick="showSection('dream-section')">🎯 梦想储蓄罐</button>
-        <button class="nav-btn" onclick="showSection('package-section')">🔍 AI套餐猎手</button>
-    </div>
-
     <div class="container">
-        <!-- 梦想储蓄罐部分 -->
-        <div id="dream-section" class="app-section active">
-            <header>
-                <h1>🎯 我的梦想储蓄罐</h1>
-                <p>把存钱变成游戏，让梦想触手可及</p >
-            </header>
-
-            <!-- 统计面板 -->
-            <div class="stats-panel">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalDreams">0</div>
-                    <div class="stat-label">总梦想数</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="completedDreams">0</div>
-                    <div class="stat-label">已完成</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="totalSaved">¥0</div>
-                    <div class="stat-label">已存储</div>
-                </div>
+        <header>
+            <h1>🎯 我的梦想储蓄罐</h1>
+            <p>把存钱变成游戏，让梦想触手可及</p >
+        </header>
+        
+        <!-- 功能导航区域 -->
+        <div style="text-align: center; margin: 30px 0;">
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <a href=" " style="display: inline-block; background: #3498db; color: white; padding: 15px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px; min-width: 180px;">
+                    🔍 AI套餐猎手<br>
+                    <small style="font-size: 12px; opacity: 0.9;">智能推荐手机套餐</small>
+                </a >
+                
+                <a href="financial-fitting.html" style="display: inline-block; background: #9b59b6; color: white; padding: 15px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px; min-width: 180px;">
+                    👔 金融试衣间<br>
+                    <small style="font-size: 12px; opacity: 0.9;">试穿金融产品</small>
+                </a >
             </div>
-            
-            <!-- 创建梦想区域 -->
-            <div class="dream-creator">
-                <h3>创建新梦想</h3>
-                <input type="text" id="dreamName" placeholder="你的梦想是什么？比如：Switch游戏机">
-                <input type="number" id="dreamTarget" placeholder="需要多少钱？比如：2000">
-                <button onclick="createDream()">创建梦想</button>
+            <p style="color: #7f8c8d; margin-top: 15px;">三大智能工具，让你的每一分钱都发挥最大价值</p >
+        </div>
+        
+        <!-- 统计面板 -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="totalDreams">0</div>
+                <div class="stat-label">总梦想数</div>
             </div>
-
-            <!-- 显示梦想列表的区域 -->
-            <div id="dreamsContainer" class="dreams-container">
-                <p style="text-align: center; color: #666;">还没有梦想，快创建一个吧！</p >
+            <div class="stat-item">
+                <div class="stat-number" id="completedDreams">0</div>
+                <div class="stat-label">已完成</div>
             </div>
-
-            <!-- 记录按钮 -->
-            <div class="add-record">
-                <button onclick="showRecordModal()">+ 记录储蓄</button>
+            <div class="stat-item">
+                <div class="stat-number" id="totalSaved">¥0</div>
+                <div class="stat-label">已存储</div>
             </div>
         </div>
+        
+        <!-- 创建梦想区域 -->
+        <div class="dream-creator">
+            <h3>创建新梦想</h3>
+            <input type="text" id="dreamName" placeholder="你的梦想是什么？比如：Switch游戏机">
+            <input type="number" id="dreamTarget" placeholder="需要多少钱？比如：2000">
+            <button onclick="createDream()">创建梦想</button>
+        </div>
 
-        <!-- AI套餐猎手部分 -->
-        <div id="package-section" class="app-section">
-            <header>
-                <h1>🔍 AI套餐猎手</h1>
-                <p>智能分析你的手机使用习惯，推荐最省钱套餐</p >
-            </header>
-            
-            <div class="input-section">
-                <h3>你的当前套餐情况</h3>
-                
-                <div class="form-group">
-                    <label>每月流量使用 (GB)</label>
-                    <input type="range" id="dataUsage" min="1" max="50" value="10">
-                    <span id="dataValue">10 GB</span>
-                </div>
-                
-                <div class="form-group">
-                    <label>每月通话时长 (分钟)</label>
-                    <input type="range" id="callUsage" min="0" max="1000" value="200">
-                    <span id="callValue">200 分钟</span>
-                </div>
-                
-                <div class="form-group">
-                    <label>每月短信数量</label>
-                    <select id="smsUsage">
-                        <option value="50">很少 (50条以下)</option>
-                        <option value="200">一般 (200条左右)</option>
-                        <option value="500">很多 (500条以上)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>当前月费</label>
-                    <input type="number" id="currentCost" placeholder="例如：58" value="58">
-                    <small>请输入你目前每月支付的费用</small>
-                </div>
-                
-                <div class="form-group">
-                    <label>运营商偏好</label>
-                    <select id="operatorPref">
-                        <option value="any">不限运营商</option>
-                        <option value="china_mobile">中国移动</option>
-                        <option value="china_unicom">中国联通</option>
-                        <option value="china_telecom">中国电信</option>
-                    </select>
-                </div>
-                
-                <button onclick="analyzePackage()" style="width: 100%; padding: 15px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                    🚀 AI智能分析
-                </button>
-            </div>
-            
-            <div id="resultSection" class="result-section">
-                <h3>💡 为你找到最佳套餐</h3>
-                <div id="packageResults">
-                    <!-- 套餐推荐将在这里显示 -->
-                </div>
-            </div>
+        <!-- 显示梦想列表的区域 -->
+        <div id="dreamsContainer" class="dreams-container">
+            <p style="text-align: center; color: #666;">还没有梦想，快创建一个吧！</p >
+        </div>
+
+        <!-- 记录按钮 -->
+        <div class="add-record">
+            <button onclick="showRecordModal()">+ 记录储蓄</button>
         </div>
     </div>
 
@@ -231,27 +90,5 @@
     <!-- 引入图表库和我们的JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
-    <script src="package-hunter.js"></script>
-    
-    <script>
-        // 导航切换功能
-        function showSection(sectionId) {
-            // 隐藏所有部分
-            document.querySelectorAll('.app-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // 移除所有按钮的active类
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // 显示选中的部分
-            document.getElementById(sectionId).classList.add('active');
-            
-            // 为当前按钮添加active类
-            event.target.classList.add('active');
-        }
-    </script>
 </body>
 </html>

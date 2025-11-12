@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>智囊AIFin - 梦想引擎</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 我的梦想储蓄罐</h1>
+            <p>把存钱变成游戏，让梦想触手可及</p >
+        </header>
+        
+        <!-- 统计面板 -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-number" id="totalDreams">0</div>
+                <div class="stat-label">总梦想数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="completedDreams">0</div>
+                <div class="stat-label">已完成</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalSaved">¥0</div>
+                <div class="stat-label">已存储</div>
+            </div>
+        </div>
+        
+        <!-- 创建梦想区域 -->
+        <div class="dream-creator">
+            <h3>创建新梦想</h3>
+            <input type="text" id="dreamName" placeholder="你的梦想是什么？比如：Switch游戏机">
+            <input type="number" id="dreamTarget" placeholder="需要多少钱？比如：2000">
+            <button onclick="createDream()">创建梦想</button>
+        </div>
+
+        <!-- 显示梦想列表的区域 -->
+        <div id="dreamsContainer" class="dreams-container">
+            <p style="text-align: center; color: #666;">还没有梦想，快创建一个吧！</p >
+        </div>
+
+        <!-- 记录按钮 -->
+        <div class="add-record">
+            <button onclick="showRecordModal()">+ 记录储蓄</button>
+        </div>
+    </div>
+
+    <!-- 记录储蓄的弹窗 -->
+    <div id="recordModal" class="modal">
+        <div class="modal-content">
+            <h3>为梦想存钱</h3>
+            
+            <!-- 梦想选择下拉菜单 -->
+            <div class="form-group">
+                <label for="dreamSelect">选择梦想：</label>
+                <select id="dreamSelect">
+                    <!-- 选项将由JavaScript动态生成 -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="recordAmount">存入金额：</label>
+                <input type="number" id="recordAmount" placeholder="输入金额">
+            </div>
+            
+            <div class="modal-actions">
+                <button onclick="saveToDream()" class="save-btn">存入梦想</button>
+                <button onclick="closeRecordModal()" class="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入图表库和我们的JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

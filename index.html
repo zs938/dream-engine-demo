@@ -1,64 +1,331 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>智囊AIFin - 梦想引擎</title>
+    <title>智囊AIFin - 智能财务助手</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 选项卡样式 */
+        .tab-container {
+            margin: 20px 0;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 套餐猎手样式 */
+        .package-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .package-results {
+            display: none;
+            margin-top: 25px;
+        }
+        
+        .package-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .savings-badge {
+            background: #2ecc71;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        /* 金融试衣间样式 */
+        .product-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .product-card.selected {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        
+        .product-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .simulation-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: none;
+        }
+        
+        .consumption-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .input-group {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🎯 我的梦想储蓄罐</h1>
-            <p>把存钱变成游戏，让梦想触手可及</p >
+            <h1>🎯 智囊AIFin</h1>
+            <p>你的智能财务健康助手</p>
         </header>
-        
-        <!-- 功能导航区域 -->
-        <div style="text-align: center; margin: 30px 0;">
-            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <a href=" " style="display: inline-block; background: #3498db; color: white; padding: 15px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px; min-width: 180px;">
-                    🔍 AI套餐猎手<br>
-                    <small style="font-size: 12px; opacity: 0.9;">智能推荐手机套餐</small>
-                </a >
+
+        <!-- 选项卡导航 -->
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('dream')">💰 梦想储蓄罐</button>
+                <button class="tab-button" onclick="switchTab('package')">🔍 AI套餐猎手</button>
+                <button class="tab-button" onclick="switchTab('financial')">👔 金融试衣间</button>
+            </div>
+            
+            <!-- 梦想储蓄罐内容 -->
+            <div id="dream-tab" class="tab-content active">
+                <!-- 统计面板 -->
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalDreams">0</div>
+                        <div class="stat-label">总梦想数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="completedDreams">0</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalSaved">¥0</div>
+                        <div class="stat-label">已存储</div>
+                    </div>
+                </div>
                 
-                <a href="financial-fitting.html" style="display: inline-block; background: #9b59b6; color: white; padding: 15px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px; min-width: 180px;">
-                    👔 金融试衣间<br>
-                    <small style="font-size: 12px; opacity: 0.9;">试穿金融产品</small>
-                </a >
-            </div>
-            <p style="color: #7f8c8d; margin-top: 15px;">三大智能工具，让你的每一分钱都发挥最大价值</p >
-        </div>
-        
-        <!-- 统计面板 -->
-        <div class="stats-panel">
-            <div class="stat-item">
-                <div class="stat-number" id="totalDreams">0</div>
-                <div class="stat-label">总梦想数</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="completedDreams">0</div>
-                <div class="stat-label">已完成</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="totalSaved">¥0</div>
-                <div class="stat-label">已存储</div>
-            </div>
-        </div>
-        
-        <!-- 创建梦想区域 -->
-        <div class="dream-creator">
-            <h3>创建新梦想</h3>
-            <input type="text" id="dreamName" placeholder="你的梦想是什么？比如：Switch游戏机">
-            <input type="number" id="dreamTarget" placeholder="需要多少钱？比如：2000">
-            <button onclick="createDream()">创建梦想</button>
-        </div>
+                <!-- 创建梦想区域 -->
+                <div class="dream-creator">
+                    <h3>创建新梦想</h3>
+                    <input type="text" id="dreamName" placeholder="你的梦想是什么？比如：Switch游戏机">
+                    <input type="number" id="dreamTarget" placeholder="需要多少钱？比如：2000">
+                    <button onclick="createDream()">创建梦想</button>
+                </div>
 
-        <!-- 显示梦想列表的区域 -->
-        <div id="dreamsContainer" class="dreams-container">
-            <p style="text-align: center; color: #666;">还没有梦想，快创建一个吧！</p >
-        </div>
+                <!-- 显示梦想列表的区域 -->
+                <div id="dreamsContainer" class="dreams-container">
+                    <p style="text-align: center; color: #666;">还没有梦想，快创建一个吧！</p>
+                </div>
 
-        <!-- 记录按钮 -->
-        <div class="add-record">
-            <button onclick="showRecordModal()">+ 记录储蓄</button>
+                <!-- 记录按钮 -->
+                <div class="add-record">
+                    <button onclick="showRecordModal()">+ 记录储蓄</button>
+                </div>
+            </div>
+            
+            <!-- AI套餐猎手内容 -->
+            <div id="package-tab" class="tab-content">
+                <div class="package-section">
+                    <h3>🔍 AI套餐猎手</h3>
+                    <p>智能分析你的手机使用习惯，推荐最省钱套餐</p>
+                    
+                    <div class="form-group">
+                        <label>每月流量使用 (GB)</label>
+                        <input type="range" id="dataUsage" min="1" max="50" value="10">
+                        <span id="dataValue">10 GB</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>每月通话时长 (分钟)</label>
+                        <input type="range" id="callUsage" min="0" max="1000" value="200">
+                        <span id="callValue">200 分钟</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>每月短信数量</label>
+                        <select id="smsUsage">
+                            <option value="50">很少 (50条以下)</option>
+                            <option value="200">一般 (200条左右)</option>
+                            <option value="500">很多 (500条以上)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>当前月费</label>
+                        <input type="number" id="currentCost" placeholder="例如：58" value="58">
+                        <small>请输入你目前每月支付的费用</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>运营商偏好</label>
+                        <select id="operatorPref">
+                            <option value="any">不限运营商</option>
+                            <option value="china_mobile">中国移动</option>
+                            <option value="china_unicom">中国联通</option>
+                            <option value="china_telecom">中国电信</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="analyzePackage()" style="width: 100%; padding: 15px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                        🚀 AI智能分析
+                    </button>
+                    
+                    <div id="packageResults" class="package-results">
+                        <!-- 套餐推荐将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 金融试衣间内容 -->
+            <div id="financial-tab" class="tab-content">
+                <div class="package-section">
+                    <h3>👔 金融试衣间</h3>
+                    <p>像试衣服一样体验金融产品，找到最适合你的那一款</p>
+                    
+                    <!-- 产品选择区域 -->
+                    <div class="product-selection">
+                        <div class="product-card" onclick="selectProduct('credit-card')">
+                            <div class="product-icon">💳</div>
+                            <h3>返现信用卡</h3>
+                            <p>消费返现，积分兑换，适合日常消费</p>
+                            <small>推荐指数: ⭐⭐⭐⭐⭐</small>
+                        </div>
+                        
+                        <div class="product-card" onclick="selectProduct('investment')">
+                            <div class="product-icon">📈</div>
+                            <h3>理财产品</h3>
+                            <p>稳健收益，资金增值，适合闲置资金</p>
+                            <small>推荐指数: ⭐⭐⭐⭐</small>
+                        </div>
+                        
+                        <div class="product-card" onclick="selectProduct('student-loan')">
+                            <div class="product-icon">🎓</div>
+                            <h3>教育贷款</h3>
+                            <p>低息贷款，支持学业，适合深造需求</p>
+                            <small>推荐指数: ⭐⭐⭐</small>
+                        </div>
+                    </div>
+
+                    <!-- 模拟分析区域 -->
+                    <div id="simulationSection" class="simulation-section">
+                        <h3 id="productTitle">产品模拟分析</h3>
+                        
+                        <!-- 消费习惯输入 -->
+                        <div class="consumption-inputs" id="consumptionInputs">
+                            <!-- 动态生成输入框 -->
+                        </div>
+                        
+                        <button onclick="runSimulation()" style="width: 100%; padding: 15px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                            🚀 开始模拟
+                        </button>
+                        
+                        <!-- 结果显示 -->
+                        <div id="resultSection" style="display: none;">
+                            <div class="result-card">
+                                <h3>💡 模拟结果</h3>
+                                <div id="simulationResults">
+                                    <!-- 模拟结果将在这里显示 -->
+                                </div>
+                            </div>
+                            
+                            <div style="text-align: center; margin: 20px 0;">
+                                <button onclick="saveToDream()" style="background: #2ecc71; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; margin: 10px;">
+                                    💰 将节省存入梦想
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -87,8 +354,423 @@
         </div>
     </div>
 
-    <!-- 引入图表库和我们的JavaScript -->
+    <!-- 引入图表库和JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
+    <script>
+        // 选项卡切换功能
+        function switchTab(tabName) {
+            // 隐藏所有选项卡内容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 移除所有按钮的active状态
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // 显示选中的选项卡内容
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // 激活选中的按钮
+            event.currentTarget.classList.add('active');
+        }
+
+        // AI套餐猎手功能
+        document.getElementById('dataUsage').addEventListener('input', function() {
+            document.getElementById('dataValue').textContent = this.value + ' GB';
+        });
+
+        document.getElementById('callUsage').addEventListener('input', function() {
+            document.getElementById('callValue').textContent = this.value + ' 分钟';
+        });
+
+        // 套餐数据库
+        const packageDatabase = [
+            {
+                name: "移动花卡-青春版",
+                operator: "china_mobile",
+                price: 29,
+                data: 30,
+                calls: 100,
+                sms: 100,
+                features: ["定向流量", "校园优惠"],
+                link: "https://www.10086.cn",
+                popularity: 95
+            },
+            {
+                name: "联通大王卡",
+                operator: "china_unicom", 
+                price: 39,
+                data: 40,
+                calls: 200,
+                sms: 200,
+                features: ["腾讯系免流", "全国通用"],
+                link: "https://www.10010.com",
+                popularity: 92
+            },
+            {
+                name: "电信星卡",
+                operator: "china_telecom",
+                price: 35,
+                data: 35,
+                calls: 150,
+                sms: 150,
+                features: ["头条系免流", "亲情网"],
+                link: "https://www.189.cn",
+                popularity: 88
+            }
+        ];
+
+        function analyzePackage() {
+            const userData = parseInt(document.getElementById('dataUsage').value);
+            const userCalls = parseInt(document.getElementById('callUsage').value);
+            const userSms = parseInt(document.getElementById('smsUsage').value);
+            const currentCost = parseInt(document.getElementById('currentCost').value);
+            const operatorPref = document.getElementById('operatorPref').value;
+            
+            if (!currentCost || currentCost <= 0) {
+                alert('请输入正确的当前月费！');
+                return;
+            }
+            
+            const matchedPackages = packageDatabase
+                .filter(pkg => {
+                    if (operatorPref !== 'any' && pkg.operator !== operatorPref) {
+                        return false;
+                    }
+                    return pkg.data >= userData && pkg.calls >= userCalls;
+                })
+                .map(pkg => {
+                    const monthlySavings = currentCost - pkg.price;
+                    return {
+                        ...pkg,
+                        monthlySavings,
+                        annualSavings: monthlySavings * 12
+                    };
+                })
+                .filter(pkg => pkg.monthlySavings > 0)
+                .sort((a, b) => b.monthlySavings - a.monthlySavings);
+            
+            displayPackageResults(matchedPackages, currentCost);
+        }
+
+        function displayPackageResults(packages, currentCost) {
+            const resultsContainer = document.getElementById('packageResults');
+            
+            if (packages.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                        <h4>😅 暂无更优套餐</h4>
+                        <p>基于你的使用习惯，我们暂时没有找到比当前套餐更划算的选择</p>
+                        <p>当前月费：<strong>¥${currentCost}</strong></p>
+                    </div>
+                `;
+            } else {
+                let html = `
+                    <div style="margin-bottom: 20px; padding: 15px; background: #ecf0f1; border-radius: 8px;">
+                        <strong>当前套餐：¥${currentCost}/月</strong>
+                    </div>
+                `;
+                
+                packages.forEach((pkg, index) => {
+                    const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                    const operatorNames = {
+                        'china_mobile': '中国移动',
+                        'china_unicom': '中国联通', 
+                        'china_telecom': '中国电信'
+                    };
+                    
+                    html += `
+                        <div class="package-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h3 style="margin: 0 0 10px 0;">${rankEmoji} ${pkg.name}</h3>
+                                    <p style="margin: 5px 0; opacity: 0.9;">${operatorNames[pkg.operator]}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 24px; font-weight: bold;">¥${pkg.price}</div>
+                                    <div style="font-size: 14px; opacity: 0.9;">/月</div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>📱 流量：${pkg.data}GB</span>
+                                    <span>📞 通话：${pkg.calls}分钟</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>💬 短信：${pkg.sms}条</span>
+                                    <span class="savings-badge">月省¥${pkg.monthlySavings}</span>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: #2ecc71;">每月节省：¥${pkg.monthlySavings}</strong>
+                                    <br>
+                                    <small>一年节省：¥${pkg.annualSavings}</small>
+                                </div>
+                                <button onclick="window.open('${pkg.link}', '_blank')" style="background: white; color: #e74c3c; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                                    立即办理
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsContainer.innerHTML = html;
+            }
+            
+            resultsContainer.style.display = 'block';
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 金融试衣间功能
+        const financialProducts = {
+            'credit-card': {
+                name: '返现信用卡',
+                type: 'credit-card',
+                features: ['餐饮5%返现', '超市3%返现', '其他1%返现', '免年费']
+            },
+            'investment': {
+                name: '余额宝理财',
+                type: 'investment',
+                features: ['灵活存取', '年化收益2%', '1元起投', '风险极低'],
+                expectedReturn: 0.02
+            },
+            'student-loan': {
+                name: '国家助学贷款',
+                type: 'loan',
+                features: ['免息期', '毕业后还款', '政府贴息', '手续简便'],
+                interestRate: 0.04,
+                gracePeriod: 48
+            }
+        };
+
+        let selectedProduct = null;
+
+        function selectProduct(productType) {
+            selectedProduct = financialProducts[productType];
+            
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            const simulationSection = document.getElementById('simulationSection');
+            simulationSection.style.display = 'block';
+            
+            document.getElementById('productTitle').textContent = `模拟分析：${selectedProduct.name}`;
+            
+            generateInputs(selectedProduct.type);
+            document.getElementById('resultSection').style.display = 'none';
+        }
+
+        function generateInputs(productType) {
+            const container = document.getElementById('consumptionInputs');
+            let html = '';
+            
+            switch(productType) {
+                case 'credit-card':
+                    html = `
+                        <div class="input-group">
+                            <label>每月餐饮消费 (元)</label>
+                            <input type="number" id="diningSpend" value="800" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>每月超市消费 (元)</label>
+                            <input type="number" id="grocerySpend" value="500" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>每月其他消费 (元)</label>
+                            <input type="number" id="otherSpend" value="1000" min="0">
+                        </div>
+                    `;
+                    break;
+                    
+                case 'investment':
+                    html = `
+                        <div class="input-group">
+                            <label>投资金额 (元)</label>
+                            <input type="number" id="investmentAmount" value="5000" min="1">
+                        </div>
+                        <div class="input-group">
+                            <label>投资期限 (月)</label>
+                            <input type="number" id="investmentMonths" value="12" min="1">
+                        </div>
+                    `;
+                    break;
+                    
+                case 'student-loan':
+                    html = `
+                        <div class="input-group">
+                            <label>贷款金额 (元)</label>
+                            <input type="number" id="loanAmount" value="8000" min="1000">
+                        </div>
+                        <div class="input-group">
+                            <label>贷款期限 (月)</label>
+                            <input type="number" id="loanMonths" value="24" min="6">
+                        </div>
+                    `;
+                    break;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function runSimulation() {
+            if (!selectedProduct) {
+                alert('请先选择一个金融产品！');
+                return;
+            }
+            
+            let results = {};
+            
+            switch(selectedProduct.type) {
+                case 'credit-card':
+                    results = simulateCreditCard();
+                    break;
+                case 'investment':
+                    results = simulateInvestment();
+                    break;
+                case 'student-loan':
+                    results = simulateLoan();
+                    break;
+            }
+            
+            displayFinancialResults(results);
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function simulateCreditCard() {
+            const diningSpend = parseFloat(document.getElementById('diningSpend').value) || 0;
+            const grocerySpend = parseFloat(document.getElementById('grocerySpend').value) || 0;
+            const otherSpend = parseFloat(document.getElementById('otherSpend').value) || 0;
+            
+            const monthlyCashback = 
+                (diningSpend * 0.05) + 
+                (grocerySpend * 0.03) + 
+                (otherSpend * 0.01);
+            
+            const annualCashback = monthlyCashback * 12;
+            const totalSpend = diningSpend + grocerySpend + otherSpend;
+            
+            return {
+                type: 'credit-card',
+                monthlySavings: monthlyCashback,
+                annualSavings: annualCashback,
+                totalSpend: totalSpend,
+                cashbackRate: (monthlyCashback / totalSpend * 100).toFixed(1)
+            };
+        }
+
+        function simulateInvestment() {
+            const amount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+            const months = parseFloat(document.getElementById('investmentMonths').value) || 0;
+            
+            const monthlyReturn = selectedProduct.expectedReturn / 12;
+            const totalReturn = amount * monthlyReturn * months;
+            
+            return {
+                type: 'investment',
+                investmentAmount: amount,
+                investmentPeriod: months,
+                expectedReturn: totalReturn,
+                returnRate: (selectedProduct.expectedReturn * 100).toFixed(1)
+            };
+        }
+
+        function simulateLoan() {
+            const amount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const months = parseFloat(document.getElementById('loanMonths').value) || 0;
+            
+            const monthlyInterest = selectedProduct.interestRate / 12;
+            const totalInterest = amount * monthlyInterest * (months - selectedProduct.gracePeriod);
+            
+            return {
+                type: 'loan',
+                loanAmount: amount,
+                loanPeriod: months,
+                interestSavings: Math.max(0, totalInterest),
+                gracePeriod: selectedProduct.gracePeriod
+            };
+        }
+
+        function displayFinancialResults(results) {
+            const container = document.getElementById('simulationResults');
+            let html = '';
+            
+            switch(results.type) {
+                case 'credit-card':
+                    html = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">月均返现</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #2ecc71;">¥${results.monthlySavings.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">年返现金额</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #2ecc71;">¥${results.annualSavings.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">综合返现率</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #3498db;">${results.cashbackRate}%</div>
+                            </div>
+                        </div>
+                        <p>基于你的消费习惯，这张信用卡每年可为你节省 <strong>¥${results.annualSavings.toFixed(2)}</strong></p>
+                    `;
+                    break;
+                    
+                case 'investment':
+                    html = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">投资金额</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #3498db;">¥${results.investmentAmount.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">预期收益</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #2ecc71;">¥${results.expectedReturn.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">年化收益率</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #3498db;">${results.returnRate}%</div>
+                            </div>
+                        </div>
+                        <p>${results.investmentPeriod}个月后，你的投资预计增值 <strong>¥${results.expectedReturn.toFixed(2)}</strong></p>
+                    `;
+                    break;
+                    
+                case 'student-loan':
+                    html = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">贷款金额</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #3498db;">¥${results.loanAmount.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">利息节省</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #2ecc71;">¥${results.interestSavings.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 14px; opacity: 0.9;">免息期</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #e74c3c;">${results.gracePeriod}个月</div>
+                            </div>
+                        </div>
+                        <p>与传统贷款相比，这个教育贷款为你节省 <strong>¥${results.interestSavings.toFixed(2)}</strong> 的利息支出</p>
+                    `;
+                    break;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function saveToDream() {
+            alert('💰 功能提示：这里可以将节省的金额直接存入你的梦想储蓄罐！');
+        }
+    </script>
 </body>
 </html>

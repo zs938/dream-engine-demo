@@ -1,132 +1,328 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>AI套餐猎手 - 智囊AIFin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI套餐猎手 - 智囊青春版</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .package-hunter-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+        .package-hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
         }
         
-        .input-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+        .package-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
         
-        .form-group {
-            margin-bottom: 20px;
+        .package-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
+        .savings-cards {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
         
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        
-        .result-section {
-            display: none;
+        .savings-card {
             background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
         
-        .package-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 15px 0;
+        .savings-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
         
-        .savings-badge {
-            background: #2ecc71;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+        .savings-icon {
+            font-size: 2rem;
+        }
+        
+        .savings-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .savings-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .savings-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
             font-weight: bold;
-            display: inline-block;
-            margin-left: 10px;
+            color: #e74c3c;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-primary {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            flex: 1;
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e5e9;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .total-savings {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 1rem 0;
+        }
+        
+        .time-acceleration {
+            color: #666;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="container package-hunter-container">
-        <header>
-            <h1>🔍 AI套餐猎手</h1>
-            <p>智能分析你的手机使用习惯，推荐最省钱套餐</p >
-            <a href=" " style="color: #3498db; text-decoration: none;">← 返回梦想引擎</a >
-        </header>
-        
-        <div class="input-section">
-            <h3>你的当前套餐情况</h3>
-            
-            <div class="form-group">
-                <label>每月流量使用 (GB)</label>
-                <input type="range" id="dataUsage" min="1" max="50" value="10">
-                <span id="dataValue">10 GB</span>
-            </div>
-            
-            <div class="form-group">
-                <label>每月通话时长 (分钟)</label>
-                <input type="range" id="callUsage" min="0" max="1000" value="200">
-                <span id="callValue">200 分钟</span>
-            </div>
-            
-            <div class="form-group">
-                <label>每月短信数量</label>
-                <select id="smsUsage">
-                    <option value="50">很少 (50条以下)</option>
-                    <option value="200">一般 (200条左右)</option>
-                    <option value="500">很多 (500条以上)</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>当前月费</label>
-                <input type="number" id="currentCost" placeholder="例如：58" value="58">
-                <small>请输入你目前每月支付的费用</small>
-            </div>
-            
-            <div class="form-group">
-                <label>运营商偏好</label>
-                <select id="operatorPref">
-                    <option value="any">不限运营商</option>
-                    <option value="china_mobile">中国移动</option>
-                    <option value="china_unicom">中国联通</option>
-                    <option value="china_telecom">中国电信</option>
-                </select>
-            </div>
-            
-            <button onclick="analyzePackage()" style="width: 100%; padding: 15px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                🚀 AI智能分析
-            </button>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor: pointer;">智囊·青春版</div>
+        <div class="nav-links">
+            <a href=" ">首页</a >
+            <a href="dream-engine.html">梦想引擎</a >
+            <a href="package-hunter.html" style="color: #667eea; font-weight: 600;">AI套餐猎手</a >
+            <a href="financial-fitting.html">金融试衣间</a >
         </div>
-        
-        <div id="resultSection" class="result-section">
-            <h3>💡 为你找到最佳套餐</h3>
-            <div id="packageResults">
-                <!-- 套餐推荐将在这里显示 -->
+    </nav>
+
+    <div class="container">
+        <div class="package-hero">
+            <h1>🚀 AI套餐猎手</h1>
+            <p>智能分析你的消费习惯，为你量身定制省钱方案</p >
+        </div>
+
+        <div class="savings-cards">
+            <!-- 餐饮优化 -->
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">🍔</div>
+                    <div class="savings-title">餐饮支出优化</div>
+                </div>
+                <div class="savings-description">
+                    我们发现你每月在外卖和餐饮上支出较高，以下方案可帮助您节省开支：
+                </div>
+                <div class="savings-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">¥300</div>
+                        <div class="stat-label">月均支出</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">¥150</div>
+                        <div class="stat-label">可节省</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">50%</div>
+                        <div class="stat-label">节省比例</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="https://www.ele.me" target="_blank" class="btn-primary" onclick="purchaseDeal('食堂周卡', 150)">购买食堂周卡 ¥25</a >
+                    <button class="btn-secondary" onclick="learnMore('餐饮')">了解更多</button>
+                </div>
             </div>
+
+            <!-- 交通优化 -->
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">🚗</div>
+                    <div class="savings-title">交通费用优化</div>
+                </div>
+                <div class="savings-description">
+                    您的交通费用有优化空间，推荐以下优惠方案：
+                </div>
+                <div class="savings-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">¥100</div>
+                        <div class="stat-label">月均支出</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">¥50</div>
+                        <div class="stat-label">可节省</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">50%</div>
+                        <div class="stat-label">节省比例</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="https://www.hellobike.com" target="_blank" class="btn-primary" onclick="purchaseDeal('单车月卡', 50)">购买共享单车月卡 ¥15</a >
+                    <button class="btn-secondary" onclick="learnMore('交通')">了解更多</button>
+                </div>
+            </div>
+
+            <!-- 购物优惠 -->
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">🛍️</div>
+                    <div class="savings-title">购物优惠推荐</div>
+                </div>
+                <div class="savings-description">
+                    基于您的消费记录，为您匹配专属购物优惠：
+                </div>
+                <div class="savings-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">¥500</div>
+                        <div class="stat-label">月均支出</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">¥100</div>
+                        <div class="stat-label">可节省</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">20%</div>
+                        <div class="stat-label">节省比例</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="https://www.jd.com" target="_blank" class="btn-primary" onclick="purchaseDeal('电商优惠券', 100)">领取专属优惠券</a >
+                    <button class="btn-secondary" onclick="learnMore('购物')">了解更多</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>💎 月度节省总结</h3>
+            <div class="total-savings">¥300</div>
+            <div class="time-acceleration">采用这些方案，您的梦想完成时间将提前 <strong>2个月</strong></div>
+            <button class="btn-primary" style="margin-top: 1rem; display: inline-block;" onclick="applyAllSavings()">一键应用所有优化</button>
         </div>
     </div>
 
-    <script src="package-hunter.js"></script>
+    <script>
+        function showPurchaseSuccess(dealType, savings) {
+            // 创建成功提示
+            const successMsg = document.createElement('div');
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            successMsg.innerHTML = `
+                <strong>✅ 购买成功！</strong><br>
+                已为您应用 ${dealType}<br>
+                预计月省: ¥${savings}
+            `;
+            document.body.appendChild(successMsg);
+            
+            // 3秒后自动消失
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+        }
+
+        // 更新购买函数
+        function purchaseDeal(dealType, savings = 0) {
+            showPurchaseSuccess(dealType, savings);
+            
+            // 更新总节省金额
+            const totalElement = document.querySelector('.total-savings');
+            const currentTotal = parseInt(totalElement.textContent.replace('¥', ''));
+            const newTotal = currentTotal + savings;
+            totalElement.textContent = `¥${newTotal}`;
+            
+            // 更新提前时间
+            const timeElement = document.querySelector('.time-acceleration strong');
+            const currentMonths = parseInt(timeElement.textContent);
+            const newMonths = Math.max(1, currentMonths - 1); // 最少提前1个月
+            timeElement.textContent = `${newMonths}个月`;
+        }
+        
+        function learnMore(category) {
+            alert(`📊 ${category}优化详情：\n\n基于AI分析，我们发现了您在${category}类目下的消费模式，并为您匹配了最适合的优惠方案。\n\n这些推荐基于真实的联盟合作，为您省钱的同时为我们创造收入。`);
+        }
+        
+        function applyAllSavings() {
+            alert('🎉 已为您一键应用所有优化方案！\n\n预计月度节省：¥300\n梦想完成时间提前：2个月\n\n您的财务健康度提升至：85分');
+        }
+
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>

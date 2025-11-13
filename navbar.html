@@ -1,0 +1,35 @@
+<nav>
+    <div class="logo" onclick="location.href='index.html'" style="cursor: pointer;">智囊·青春版</div>
+    <div class="nav-links">
+        <a href=" " id="nav-home">首页</a >
+        <a href="dream-engine.html" id="nav-dream">梦想引擎</a >
+        <a href="package-hunter.html" id="nav-package">AI套餐猎手</a >
+        <a href="financial-fitting.html" id="nav-finance">金融试衣间</a >
+    </div>
+</nav>
+
+<script>
+// 自动高亮当前页面
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop();
+    let pageId = '';
+    
+    if (currentPage === 'index.html' || currentPage === '') {
+        pageId = 'nav-home';
+    } else if (currentPage === 'dream-engine.html') {
+        pageId = 'nav-dream';
+    } else if (currentPage === 'package-hunter.html') {
+        pageId = 'nav-package';
+    } else if (currentPage === 'financial-fitting.html') {
+        pageId = 'nav-finance';
+    }
+    
+    if (pageId) {
+        const element = document.getElementById(pageId);
+        if (element) {
+            element.style.color = '#667eea';
+            element.style.fontWeight = '600';
+        }
+    }
+});
+</script>

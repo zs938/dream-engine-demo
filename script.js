@@ -1,279 +1,313 @@
-// 存储梦想和记录的数据
-let dreams = [];
-let records = [];
+// script.js - 梦想引擎核心逻辑
 
-// 页面加载时运行
-document.addEventListener('DOMContentLoaded', function() {
-    loadFromLocalStorage();
-    renderDreams();
-});
+// 数据存储和梦想管理
+let dreams = [];
+let currentDreamId = null;
+const AUTO_SAVINGS_TOTAL = 300; // 每月总智能储蓄金额
+
+// 初始化
+function init() {
+    loadDreams();
+    renderDreamsList();
+    checkEmptyState();
+}
+
+// 从localStorage加载梦想数据
+function loadDreams() {
+    const saved = localStorage.getItem('userDreams');
+    if (saved) {
+        dreams = JSON.parse(saved);
+    }
+}
+
+// 保存梦想数据到localStorage
+function saveDreams() {
+    localStorage.setItem('userDreams', JSON.stringify(dreams));
+    showSuccess('梦想数据已保存！');
+}
+
+// 渲染梦想列表
+function renderDreamsList() {
+    const dreamsList = document.getElementById('dreamsList');
+    if (!dreamsList) return;
+    
+    dreamsList.innerHTML = '';
+    
+    dreams.forEach(dream => {
+        const progress = (dream.currentSaved / dream.targetAmount) * 100;
+        const progressPercent = Math.min(progress, 100).toFixed(1);
+        
+        const dreamElement = document.createElement('div');
+        dreamElement.className = `dream-item ${dream.id === currentDreamId ? 'active' : ''}`;
+        dreamElement.innerHTML = `
+            <div class="dream-item-header">
+                <div class="dream-name">${dream.name}</div>
+                <div class="dream-amount">¥${dream.targetAmount}</div>
+            </div>
+            <div class="dream-progress">
+                <div class="dream-progress-fill" style="width: ${progressPercent}%"></div>
+            </div>
+            <div class="dream-stats">
+                <span>${progressPercent}%</span>
+                <span>¥${dream.currentSaved} / ¥${dream.targetAmount}</span>
+            </div>
+        `;
+        
+        dreamElement.addEventListener('click', () => selectDream(dream.id));
+        dreamsList.appendChild(dreamElement);
+    });
+}
+
+// 检查空状态
+function checkEmptyState() {
+    const emptyState = document.getElementById('emptyState');
+    const createForm = document.getElementById('createForm');
+    const dreamDetail = document.getElementById('dreamDetail');
+    
+    if (!emptyState || !createForm || !dreamDetail) return;
+    
+    if (dreams.length === 0) {
+        emptyState.classList.remove('hidden');
+        createForm.classList.remove('hidden');
+        dreamDetail.classList.add('hidden');
+    } else {
+        emptyState.classList.add('hidden');
+        if (currentDreamId) {
+            createForm.classList.add('hidden');
+            dreamDetail.classList.remove('hidden');
+        }
+    }
+}
+
+// 选择梦想
+function selectDream(dreamId) {
+    currentDreamId = dreamId;
+    renderDreamsList();
+    showDreamDetail(dreamId);
+    checkEmptyState();
+}
+
+// 显示梦想详情
+function showDreamDetail(dreamId) {
+    const dream = dreams.find(d => d.id === dreamId);
+    if (!dream) return;
+    
+    // 计算智能储蓄分配（基于优先级）
+    const priorityWeights = { high: 0.5, medium: 0.3, low: 0.2 };
+    const totalWeight = dreams.reduce((sum, d) => sum + priorityWeights[d.priority], 0);
+    const autoSavings = Math.round((priorityWeights[dream.priority] / totalWeight) * AUTO_SAVINGS_TOTAL);
+    
+    // 更新UI
+    document.getElementById('detailDreamName').textContent = dream.name;
+    document.getElementById('detailTargetAmount').textContent = `¥${dream.targetAmount}`;
+    document.getElementById('detailCurrentSaved').textContent = `¥${dream.currentSaved}`;
+    
+    const progress = (dream.currentSaved / dream.targetAmount) * 100;
+    const progressPercent = Math.min(progress, 100);
+    document.getElementById('detailProgressFill').style.width = `${progressPercent}%`;
+    document.getElementById('detailProgressText').textContent = `${progressPercent.toFixed(1)}%`;
+    
+    const totalMonthly = dream.monthlySave + autoSavings;
+    const monthsNeeded = Math.ceil((dream.targetAmount - dream.currentSaved) / totalMonthly);
+    const dailySave = (totalMonthly / 30).toFixed(2);
+    
+    // 计算完成日期
+    const completionDate = new Date();
+    completionDate.setMonth(completionDate.getMonth() + monthsNeeded);
+    
+    // 更新详细信息
+    document.getElementById('autoSavings').textContent = `¥${autoSavings}`;
+    document.getElementById('manualSavings').textContent = `¥${dream.monthlySave}`;
+    document.getElementById('totalMonthly').textContent = `¥${totalMonthly}`;
+    document.getElementById('priorityBadge').textContent = getPriorityText(dream.priority);
+    document.getElementById('detailMonthsNeeded').textContent = monthsNeeded;
+    document.getElementById('detailMonthlyAmount').textContent = totalMonthly;
+    document.getElementById('detailDailySave').textContent = dailySave;
+    document.getElementById('detailCompletionDate').textContent = completionDate.toLocaleDateString();
+}
+
+// 获取优先级文本
+function getPriorityText(priority) {
+    const texts = { high: '高', medium: '中', low: '低' };
+    return texts[priority] || '中';
+}
+
+// 显示创建表单
+function showCreateForm() {
+    document.getElementById('createForm').classList.remove('hidden');
+    document.getElementById('dreamDetail').classList.add('hidden');
+}
+
+// 隐藏创建表单
+function hideCreateForm() {
+    if (dreams.length > 0 && currentDreamId) {
+        document.getElementById('createForm').classList.add('hidden');
+        document.getElementById('dreamDetail').classList.remove('hidden');
+    }
+}
 
 // 创建新梦想
 function createDream() {
-    const nameInput = document.getElementById('dreamName');
-    const targetInput = document.getElementById('dreamTarget');
+    const name = document.getElementById('dreamName').value.trim();
+    const targetAmount = parseInt(document.getElementById('targetAmount').value);
+    const monthlySave = parseInt(document.getElementById('monthlySave').value);
+    const priority = document.getElementById('dreamPriority').value;
     
-    const name = nameInput.value.trim();
-    const target = parseFloat(targetInput.value);
-    
-    if (!name) {
-        alert('请填写梦想名称！');
+    if (!name || !targetAmount || !monthlySave) {
+        alert('请填写完整的梦想信息！');
         return;
     }
     
-    if (!target || target <= 0) {
-        alert('请填写正确的目标金额！');
-        return;
-    }
-
-    // 检查是否已有同名梦想
-    const existingDream = dreams.find(dream => dream.name === name);
-    if (existingDream) {
+    // 检查重复
+    const isDuplicate = dreams.some(dream => 
+        dream.name.toLowerCase() === name.toLowerCase()
+    );
+    
+    if (isDuplicate) {
         alert('已存在同名的梦想，请使用不同的名称！');
         return;
     }
-
-    // 创建梦想对象
+    
     const newDream = {
-        id: Date.now(),
+        id: Date.now(), // 使用时间戳作为唯一ID
         name: name,
-        target: target,
-        saved: 0,
-        progress: 0,
-        completed: false,
-        created: new Date().toLocaleDateString()
+        targetAmount: targetAmount,
+        monthlySave: monthlySave,
+        priority: priority,
+        currentSaved: 0,
+        createdAt: new Date().toISOString()
     };
-
+    
     dreams.push(newDream);
-    saveToLocalStorage();
-    renderDreams();
+    currentDreamId = newDream.id;
     
-    nameInput.value = '';
-    targetInput.value = '';
+    // 重置表单
+    document.getElementById('dreamName').value = '';
+    document.getElementById('targetAmount').value = '';
+    document.getElementById('monthlySave').value = '';
     
-    alert(`梦想"${name}"创建成功！`);
+    // 更新UI
+    saveDreams();
+    renderDreamsList();
+    showDreamDetail(newDream.id);
+    checkEmptyState();
+    
+    showSuccess(`梦想"${name}"创建成功！`);
 }
 
-// 自动识别梦想分类
-function getDreamCategory(dreamName) {
-    const name = dreamName.toLowerCase();
+// 为当前梦想添加储蓄
+function addSavingsToCurrent(amount) {
+    if (!currentDreamId) return;
     
-    const categories = {
-        '电子产品': ['手机', '电脑', '平板', '耳机', 'switch', 'ps5', 'xbox', '相机', '手表', '智能'],
-        '学习成长': ['课程', '书籍', '培训', '考研', '留学', '证书', '学习', '教育'],
-        '旅行探索': ['旅行', '旅游', '度假', '机票', '酒店', '民宿', '海滩', '雪山'],
-        '健康运动': ['健身', '瑜伽', '运动', '跑步', '游泳', '滑雪', '装备', '健康'],
-        '生活品质': ['家具', '装修', '家电', '厨具', '床垫', '沙发', '生活'],
-        '娱乐休闲': ['游戏', '电影', '音乐', '演唱会', '话剧', '娱乐', '休闲'],
-        '服饰美容': ['衣服', '鞋子', '包包', '化妆品', '护肤品', '美容', '服饰']
-    };
+    const dream = dreams.find(d => d.id === currentDreamId);
+    if (dream) {
+        dream.currentSaved += amount;
+        saveDreams();
+        renderDreamsList();
+        showDreamDetail(currentDreamId);
+        showSavingsSuccess(amount, dream.name);
+    }
+}
+
+// 添加自定义金额储蓄
+function addCustomSavingsToCurrent() {
+    const customAmount = parseInt(document.getElementById('customAmount').value);
+    if (customAmount && customAmount > 0) {
+        addSavingsToCurrent(customAmount);
+        document.getElementById('customAmount').value = '';
+    }
+}
+
+// 删除当前梦想
+function deleteCurrentDream() {
+    if (!currentDreamId) return;
     
-    for (const [category, keywords] of Object.entries(categories)) {
-        if (keywords.some(keyword => name.includes(keyword))) {
-            return category;
+    if (confirm('确定要删除这个梦想吗？此操作无法撤销。')) {
+        dreams = dreams.filter(dream => dream.id !== currentDreamId);
+        currentDreamId = dreams.length > 0 ? dreams[0].id : null;
+        
+        saveDreams();
+        renderDreamsList();
+        if (currentDreamId) {
+            showDreamDetail(currentDreamId);
         }
-    }
-    
-    return '其他梦想';
-}
-
-// 计算并显示鼓励信息
-function calculateEncouragement(dream) {
-    const createdDate = new Date(dream.created);
-    const currentDate = new Date();
-    const daysPassed = Math.max(1, Math.floor((currentDate - createdDate) / (1000 * 60 * 60 * 24)));
-    
-    const dailySaving = dream.saved / daysPassed;
-    const remainingAmount = dream.target - dream.saved;
-    const estimatedDaysLeft = remainingAmount / dailySaving;
-    
-    let encouragement = '';
-    
-    if (dream.completed) {
-        encouragement = '🎉 恭喜你完成了这个梦想！太棒了！';
-    } else if (dailySaving >= dream.target / 30) {
-        encouragement = `🚀 超棒！按照这个速度，${Math.ceil(estimatedDaysLeft)}天后就能实现梦想！`;
-    } else if (dailySaving >= dream.target / 60) {
-        encouragement = `👍 不错哦！保持这个节奏，${Math.ceil(estimatedDaysLeft)}天后就能达成目标！`;
-    } else {
-        encouragement = `💪 加油！每天存¥${(dream.target / 30).toFixed(2)}就能在一个月内实现梦想！`;
-    }
-    
-    return encouragement;
-}
-
-// 更新统计信息
-function updateStats() {
-    const totalDreams = dreams.length;
-    const completedDreams = dreams.filter(dream => dream.completed).length;
-    const totalSaved = dreams.reduce((sum, dream) => sum + dream.saved, 0);
-    
-    document.getElementById('totalDreams').textContent = totalDreams;
-    document.getElementById('completedDreams').textContent = completedDreams;
-    document.getElementById('totalSaved').textContent = `¥${totalSaved}`;
-}
-
-// 显示梦想列表
-function renderDreams() {
-    const container = document.getElementById('dreamsContainer');
-    
-    if (dreams.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #666;">还没有梦想，快创建一个吧！</p >';
-        return;
-    }
-    
-    container.innerHTML = '';
-    
-    dreams.forEach(dream => {
-        // 计算进度百分比，限制最大为100%
-        const progressPercent = Math.min((dream.saved / dream.target * 100).toFixed(1), 100);
-        const isCompleted = progressPercent >= 100;
-        const encouragement = calculateEncouragement(dream);
+        checkEmptyState();
         
-        // 更新梦想的完成状态
-        dream.completed = isCompleted;
-        dream.progress = progressPercent;
-        
-        // 创建梦想卡片HTML
-        const dreamCard = document.createElement('div');
-        dreamCard.className = `dream-card ${isCompleted ? 'completed' : ''} ${getDreamCategory(dream.name)}`;
-        dreamCard.innerHTML = `
-            <button class="delete-dream" onclick="deleteDream(${dream.id})">×</button>
-            <div class="dream-category">${getDreamCategory(dream.name)}</div>
-            <h3>${dream.name}</h3>
-            <div class="progress-bar">
-                <div class="progress" style="width: ${progressPercent}%">
-                    ${progressPercent}%
-                </div>
-            </div>
-            <div class="dream-info">
-                <span>已存: ¥${dream.saved}</span>
-                <span>目标: ¥${dream.target}</span>
-                <span>${isCompleted ? '已完成!' : `${progressPercent}%`}</span>
-            </div>
-            <div class="encouragement">${encouragement}</div>
-        `;
-        
-        container.appendChild(dreamCard);
-    });
-    
-    // 更新统计面板
-    updateStats();
-    saveToLocalStorage();
-}
-
-// 显示记录弹窗
-function showRecordModal() {
-    if (dreams.length === 0) {
-        alert('请先创建一个梦想！');
-        return;
-    }
-    
-    // 获取下拉菜单元素
-    const dreamSelect = document.getElementById('dreamSelect');
-    dreamSelect.innerHTML = '';
-    
-    // 只为未完成的梦想添加选项
-    const activeDreams = dreams.filter(dream => !dream.completed);
-    
-    if (activeDreams.length === 0) {
-        alert('所有梦想都已完成！请创建新的梦想。');
-        return;
-    }
-    
-    // 为每个活跃梦想创建选项
-    activeDreams.forEach(dream => {
-        const option = document.createElement('option');
-        option.value = dream.id;
-        option.textContent = `${dream.name} (${dream.progress}%)`;
-        dreamSelect.appendChild(option);
-    });
-    
-    document.getElementById('recordModal').style.display = 'block';
-}
-
-// 关闭记录弹窗
-function closeRecordModal() {
-    document.getElementById('recordModal').style.display = 'none';
-    document.getElementById('recordAmount').value = '';
-}
-
-// 存入梦想
-function saveToDream() {
-    const amountInput = document.getElementById('recordAmount');
-    const dreamSelect = document.getElementById('dreamSelect');
-    const amount = parseFloat(amountInput.value);
-    
-    if (!amount || amount <= 0) {
-        alert('请输入有效金额！');
-        return;
-    }
-
-    // 获取选中的梦想ID
-    const selectedDreamId = parseInt(dreamSelect.value);
-    const selectedDream = dreams.find(dream => dream.id === selectedDreamId);
-    
-    if (!selectedDream) {
-        alert('请选择要存入的梦想！');
-        return;
-    }
-    
-    // 检查梦想是否已完成
-    if (selectedDream.completed) {
-        alert('这个梦想已经完成了！请选择其他梦想。');
-        return;
-    }
-
-    // 存入选中的梦想
-    selectedDream.saved += amount;
-    
-    // 记录这笔储蓄
-    records.push({
-        type: 'saving',
-        amount: amount,
-        dream: selectedDream.name,
-        date: new Date().toLocaleString()
-    });
-
-    saveToLocalStorage();
-    renderDreams();
-    closeRecordModal();
-    
-    // 检查是否完成梦想
-    if (selectedDream.saved >= selectedDream.target) {
-        setTimeout(() => {
-            alert(`🎉 恭喜！梦想"${selectedDream.name}"已经完成！`);
-        }, 300);
-    } else {
-        alert(`成功为"${selectedDream.name}"存入 ¥${amount}！`);
+        showSuccess('梦想已删除');
     }
 }
 
-// 删除梦想功能
-function deleteDream(dreamId) {
-    if (confirm('确定要删除这个梦想吗？')) {
-        dreams = dreams.filter(dream => dream.id !== dreamId);
-        saveToLocalStorage();
-        renderDreams();
-    }
+// 显示成功消息
+function showSuccess(message) {
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #27ae60;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+    `;
+    successMsg.innerHTML = `<strong>✅ ${message}</strong>`;
+    document.body.appendChild(successMsg);
+    
+    setTimeout(() => successMsg.remove(), 3000);
 }
 
-// 保存到本地存储
-function saveToLocalStorage() {
-    localStorage.setItem('dreams', JSON.stringify(dreams));
-    localStorage.setItem('records', JSON.stringify(records));
+// 显示储蓄成功消息
+function showSavingsSuccess(amount, dreamName) {
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4ecdc4;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+    `;
+    successMsg.innerHTML = `
+        <strong>✅ 存入成功！</strong><br>
+        已为"${dreamName}"存入 ¥${amount}
+    `;
+    document.body.appendChild(successMsg);
+    
+    setTimeout(() => successMsg.remove(), 3000);
 }
 
-// 从本地存储加载
-function loadFromLocalStorage() {
-    const savedDreams = localStorage.getItem('dreams');
-    const savedRecords = localStorage.getItem('records');
-    
-    if (savedDreams) {
-        dreams = JSON.parse(savedDreams);
-    }
-    
-    if (savedRecords) {
-        records = JSON.parse(savedRecords);
-    }
+// 添加CSS动画
+function addGlobalStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .hidden {
+            display: none;
+        }
+    `;
+    document.head.appendChild(style);
 }
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    addGlobalStyles();
+    init();
+    
+    // 根据用户画像调整默认设置
+    const userProfile = localStorage.getItem('userProfile');
+    if (userProfile === '月光族') {
+        const monthlySaveInput = document.getElementById('monthlySave');
+        const targetAmountInput = document.getElementById('targetAmount');
+        if (monthlySaveInput) monthlySaveInput.placeholder = '300';
+        if (targetAmountInput) targetAmountInput.placeholder = '8000';
+    }
+});
